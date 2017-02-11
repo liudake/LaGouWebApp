@@ -16,6 +16,27 @@
   padding-left: 0.26666667rem;
   padding-right: 0.26666667rem;
 }
+.postionList {
+  margin: 0;
+  padding: 0;
+}
+.postionList .item {
+  margin: 0;
+  padding: 7px 3px;
+  list-style: none;
+  border-bottom: 1px solid #ddd;
+}
+.postionList .item .logo {
+  width: 1.73333333rem;
+  height: 1.73333333rem;
+  margin-right: 13px;
+}
+.postionList .item .title {
+  margin: 0;
+}
+.postionList .item .text {
+  margin: 0;
+}
 .foot {
   border-top: 1px solid #d4d4d4;
   padding: 0;
@@ -82,6 +103,9 @@
 .verticalAlignBottom {
   vertical-align: bottom;
 }
+.backgroudWhite {
+  background-color: #fff;
+}
 html,
 body {
   width: 100%;
@@ -91,4 +115,5 @@ body {
 body {
   font-size: 0.42666667rem;
   font-family: '微软雅黑';
+  background-color: #eee;
 }

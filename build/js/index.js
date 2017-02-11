@@ -7,7 +7,7 @@ angular.module('app', ['ui.router']);
 angular.module('app').config(['$stateProvider', '$urlRouterProvider', 
 function($stateProvider, $urlRouterProvider) {
 	$stateProvider.state('main', {
-		url:"/main",
+		url: "/main",
 		templateUrl: "view/main.html",
 		controller: 'mainCtrl'
 	});
@@ -34,5 +34,14 @@ angular.module('app').directive('appHead', [function() {
 		restrict: 'A',
 		replace: true,
 		templateUrl: 'view/template/head.html'
+	};
+}]);
+'use strict';
+
+angular.module('app').directive('appPositionList', [function() {
+	return {
+		restrict: 'A',
+		replace: true,
+		templateUrl: 'view/template/positionList.html'
 	};
 }]);
