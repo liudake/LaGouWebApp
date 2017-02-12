@@ -2,6 +2,9 @@
 @import 'template/positionList';
 @import 'template/foot.less';
 @import 'property.less';
+@import 'position.less';
+@import 'template/positionInfo.less';
+@import 'template/company.less';
 
 .fontSize(@px) {
 	font-size: unit(@px / 37.5, rem);
@@ -61,4 +64,9 @@ body{
 	.fontSize(16);
 	font-family: '微软雅黑';
 	background-color: @bodyBgColor;;
+}
+
+button{
+	border-width: 0;
+	outline-width: 0;
 }
