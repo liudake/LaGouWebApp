@@ -4,6 +4,30 @@ angular.module('app', ['ui.router']);
 
 'use strict';
 
+angular.module('app').value('dict', {}).run(['dict', '$http', function(dict, $http){
+	$http({
+			method: 'GET',
+			url: '/data/city.json'
+		}).then(function(success) {
+			dict.city = success.data;
+		});
+		$http({
+			method: 'GET',
+			url: '/data/salary.json'
+		}).then(function(success) {
+			dict.salary = success.data;
+		});
+		$http({
+			method: 'GET',
+			url: '/data/scale.json'
+		}).then(function(success) {
+			dict.scale = success.data;
+		});
+}]);
+
+
+'use strict';
+
 angular.module('app').config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$locationProvider.hashPrefix('');
 	$stateProvider.state('main', {
@@ -18,6 +42,10 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', '$location
 		url: '/company/:id',
 		templateUrl: 'view/company.html',
 		controller: 'companyCtrl'
+	}).state('search', {
+		url: '/search',
+		templateUrl: 'view/search.html',
+		controller: 'searchCtrl'
 	});
 	$urlRouterProvider.otherwise("main");
 }])
@@ -69,6 +97,69 @@ angular.module('app').controller('positionCtrl', ['$q', '$http', '$state', '$sco
 	getPosition().then(function(success) {
 		getCompany(success.data.companyId);
 	});
+}]);
+'use strict';
+
+angular.module('app').controller('searchCtrl', ['dict', '$http', '$scope', function(dict, $http, $scope) {
+	$scope.name = '';
+	$scope.search = function() {
+		$http({
+			method: 'GET',
+			url: '/data/positionList.json?name=' + $scope.name
+		}).then(function(success) {
+			$scope.positionList = success.data;
+		});
+	};
+	$scope.search();
+	$scope.sheet = {};
+	$scope.tabList = [{
+		id: 'city',
+		name: '城市'
+	},{
+		id: 'salary',
+		name: '薪资'
+	},{
+		id: 'scale',
+		name: '公司规模'
+	}];
+
+	 $scope.filterObj = {};
+	var tabId = '';
+	$scope.tClick = function(id, name) {
+		tabId = id;
+		$scope.sheet.list = dict[id];
+		$scope.sheet.visible = true;
+	};
+
+	$scope.sClick = function(id, name) {
+		if(id) {
+			angular.forEach($scope.tabList, function(item) {
+				if(item.id === tabId) {
+					item.name = name;
+				}
+			});
+			$scope.filterObj[tabId + 'Id'] = id;
+
+		}else{
+			delete $scope.filterObj[tabId + 'Id'];
+			angular.forEach($scope.tabList, function(item) {
+				if(item.id === tabId) {
+					switch (item.id) {
+						case 'city':
+							item.name = '城市';
+							break;
+						case 'salary':
+							item.name = '薪资';
+							break;
+						case 'scale':
+							item.name = '公司规模';
+							break;
+					}
+				}
+			});
+		}
+	}
+
 }]);
 'use strict';
 
@@ -163,7 +254,60 @@ angular.module('app').directive('appPositionList', [function() {
 		replace: true,
 		templateUrl: 'view/template/positionList.html',
 		scope: {
-			data: '='
+			data: '=',
+			filterObj: '='
 		}
+	};
+}]);
+'use strict';
+
+angular.module('app').directive('appSheet', [function() {
+	return {
+		restrcit: 'A',
+		replace: true,
+		scope: {
+			list: '=',
+			visible: '=',
+			select: '&'
+		},
+		templateUrl: 'view/template/sheet.html'
+	};
+}]);
+'use strict';
+
+angular.module('app').directive('appTab', [function() {
+	return {
+		restrict: 'A',
+		replace: true,
+		scope: {
+			list: '=',
+			tabClick: '&'
+		},
+		templateUrl: 'view/template/tab.html',
+		link: function($scope) {
+			$scope.click = function(tab) {
+			  $scope.selectId = tab.id;
+			  $scope.tabClick(tab);
+			};
+		}
+	};
+}]);
+'use strict';
+
+angular.module('app').filter('filterByObj', [function() {
+	return function(list, obj) {
+		var result = [];
+		angular.forEach(list, function(item) {
+			var isEqual = true;
+			for(var e in obj) {
+				if(item[e] !== obj[e]) {
+					isEqual = false;
+				}
+			}
+			if(isEqual) {
+				result.push(item);
+			}
+		});
+		return result;
 	};
 }]);
