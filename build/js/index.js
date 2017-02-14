@@ -46,6 +46,26 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', '$location
 		url: '/search',
 		templateUrl: 'view/search.html',
 		controller: 'searchCtrl'
+	}).state('login', {
+		url: '/login',
+		templateUrl: 'view/login.html',
+		controller: 'loginCtrl'
+	}).state('register', {
+		url: '/register',
+		templateUrl: 'view/register.html',
+		controller: 'registerCtrl'
+	}).state('my', {
+		url: '/my',
+		templateUrl: 'view/my.html',
+		controller: 'myCtrl'
+	}).state('favorite', {
+		url: '/favorite',
+		templateUrl: 'view/favorite.html',
+		controller: 'favoriteCtrl'
+	}).state('post', {
+		url: '/post',
+		templateUrl: 'view/post.html',
+		controller: 'postCtrl'
 	});
 	$urlRouterProvider.otherwise("main");
 }])
@@ -61,6 +81,16 @@ angular.module('app').controller('companyCtrl', ['$http', '$state', '$scope', fu
 }]);
 'use strict';
 
+angular.module('app').controller('favoriteCtrl', ['$scope', '$http', function($scope, $http) {
+	
+}]);
+'use strict';
+
+angular.module('app').controller('loginCtrl', ['$scope', '$http', function($scope, $http) {
+	
+}]);
+'use strict';
+
 angular.module('app').controller('mainCtrl', ['$scope', '$http', function($scope, $http) {
 	$http({
 		method: 'GET',
@@ -68,6 +98,11 @@ angular.module('app').controller('mainCtrl', ['$scope', '$http', function($scope
 	}).then(function(success) {
 		$scope.list = success.data;
 	});
+}]);
+'use strict';
+
+angular.module('app').controller('myCtrl', ['$scope', '$http', function($scope, $http) {
+	
 }]);
 'use strict';
 
@@ -97,6 +132,25 @@ angular.module('app').controller('positionCtrl', ['$q', '$http', '$state', '$sco
 	getPosition().then(function(success) {
 		getCompany(success.data.companyId);
 	});
+}]);
+'use strict';
+
+angular.module('app').controller('postCtrl', ['$scope', '$http', function($scope, $http) {
+	$scope.tabList = [{
+		id: 'all',
+		name: '全部'
+	},{
+		id: 'pass',
+		name: '面试通知'
+	},{
+		id: 'fail',
+		name: '不合适'
+	}]
+}]);
+'use strict';
+
+angular.module('app').controller('registerCtrl', ['$scope', '$http', function($scope, $http) {
+	
 }]);
 'use strict';
 
