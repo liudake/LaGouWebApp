@@ -9,6 +9,19 @@
 	bottom: 0;
 	form{
 		.margin-top(55);
+		.ng-invalid{
+			&+span{
+				position: absolute;
+				color: @dangerColor;
+				right: 0;
+				height: 100%;
+				text-align: right;
+				font-size: 12px;
+				p{
+					margin: 0
+				}
+			}
+		}
 		.form-line{
 			margin: 0 auto;
 			box-sizing: content-box;
@@ -20,7 +33,7 @@
 			&:first-child{
 				border-bottom: 1px solid @defaultColor;
 			}
-			span{
+			span.icon{
 				background-repeat: no-repeat;
 				background-color: @iconBgColor;
 				background-position: 15px 8px;
@@ -38,6 +51,7 @@
 				border-width: 0;
 				outline-width: 0;
 				height: 100%;
+				color: @defaultColor;
 				.fontSize(14);
 				.width(215);
 				.padding-left(30);
@@ -59,6 +73,7 @@
 				.fontSize(14);
 				.width(190);
 				.padding-left(30);
+				color: @defaultColor;
 				&::-webkit-input-placeholder{
 					color: @defaultColor;
 				}
@@ -69,6 +84,10 @@
 				border: 1px solid @headBgColor;
 				padding: 0 5px;
 				margin-top: 20px;
+				&.disabled{
+					color: @lineColor;
+					border-color: @lineColor;
+				}
 			}
 		}
 		button{

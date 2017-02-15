@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('app', ['ui.router']);
+angular.module('app', ['ui.router', 'validation']);
 
 'use strict';
 
 angular.module('app').value('dict', {}).run(['dict', '$http', function(dict, $http){
-	$http({
+		$http({
 			method: 'GET',
 			url: '/data/city.json'
 		}).then(function(success) {
@@ -26,6 +26,29 @@ angular.module('app').value('dict', {}).run(['dict', '$http', function(dict, $ht
 }]);
 
 
+'use strict';
+
+angular.module('app').config(['$provide', function($provide) {
+	$provide.decorator('$http', ['$delegate', '$q', function($delegate, $q) {
+		$delegate.post = function(url, data, config) {
+			var def = $q.defer();
+			$delegate.get(url).then(function(success) {
+				def.resolve(success);
+			}, function(err) {
+				def.reject(err);
+			});
+			return 	{
+				success: function(callback){
+					def.promise.then(callback);
+				},
+				error: function(callback) {
+					def.promise.then(callback);
+				}
+			}
+		}	
+		return $delegate;
+	}]);
+}]);
 'use strict';
 
 angular.module('app').config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -69,6 +92,35 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', '$location
 	});
 	$urlRouterProvider.otherwise("main");
 }])
+'use strcit';
+
+angular.module('app').config(['$validationProvider', function($validationProvider) {
+	var expression = {
+		phone: /^1[\d]{10}$/,
+		password: function(value) {
+			var str = value + '';
+			return str.length > 5;
+		},
+		required: function(value) {
+			return !!value;
+		}
+	};
+	var defaultMsg = {
+		phone: {
+			success: '',
+			error: '必须是11位手机号'
+		},
+		password: {
+			success: '',
+			error: '长度至少6位'
+		},
+		required: {
+			success: '',
+			error: '验证码不能为空！'
+		}
+	};
+	$validationProvider.setExpression(expression).setDefaultMsg(defaultMsg);
+}]);
 'use strcit';
 
 angular.module('app').controller('companyCtrl', ['$http', '$state', '$scope', function($http, $state, $scope) {
@@ -149,8 +201,34 @@ angular.module('app').controller('postCtrl', ['$scope', '$http', function($scope
 }]);
 'use strict';
 
-angular.module('app').controller('registerCtrl', ['$scope', '$http', function($scope, $http) {
-	
+angular.module('app').controller('registerCtrl', ['$interval', '$scope', '$http','$state', function($interval, $scope, $http, $state) {
+	$scope.submit = function() {
+		$http.post('/data/regist.json', $scope.user).success(function(success) {
+			$state.go('login');
+		});
+	}
+	var count = 60;
+	$scope.send = function() {
+		$http({
+			method: 'GET',
+			url: '/data/code.json'
+		}).then(function(success) {
+			if(success.data.state === 1) {
+				count = 60;
+				$scope.time = '60s';
+				var interval = $interval(function() {
+					if(count <= 0) {
+						$interval.cancel(interval);
+						$scope.time = '';
+						return;
+					}else{
+						count--;
+						$scope.time = count + 's';
+					}
+				},1000);
+			}
+		});
+	}
 }]);
 'use strict';
 

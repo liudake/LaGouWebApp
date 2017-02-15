@@ -382,6 +382,17 @@
 .register form {
   margin-top: 1.46666667rem;
 }
+.register form .ng-invalid + span {
+  position: absolute;
+  color: red;
+  right: 0;
+  height: 100%;
+  text-align: right;
+  font-size: 12px;
+}
+.register form .ng-invalid + span p {
+  margin: 0;
+}
 .register form .form-line {
   margin: 0 auto;
   box-sizing: content-box;
@@ -394,7 +405,7 @@
 .register form .form-line:first-child {
   border-bottom: 1px solid #fff;
 }
-.register form .form-line span {
+.register form .form-line span.icon {
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.4);
   background-position: 15px 8px;
@@ -412,6 +423,7 @@
   border-width: 0;
   outline-width: 0;
   height: 100%;
+  color: #fff;
   font-size: 0.37333333rem;
   width: 5.73333333rem;
   padding-left: 0.8rem;
@@ -433,6 +445,7 @@
   font-size: 0.37333333rem;
   width: 5.06666667rem;
   padding-left: 0.8rem;
+  color: #fff;
 }
 .register form .message-wrap .message-box::-webkit-input-placeholder {
   color: #fff;
@@ -443,6 +456,10 @@
   border: 1px solid #12d5b5;
   padding: 0 5px;
   margin-top: 20px;
+}
+.register form .message-wrap .message.disabled {
+  color: #d4d4d4;
+  border-color: #d4d4d4;
 }
 .register form button {
   width: 8rem;

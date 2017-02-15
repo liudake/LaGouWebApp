@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app').value('dict', {}).run(['dict', '$http', function(dict, $http){
-	$http({
+		$http({
 			method: 'GET',
 			url: '/data/city.json'
 		}).then(function(success) {
