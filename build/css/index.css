@@ -42,6 +42,20 @@
 .postionList .item .text {
   margin: 0;
 }
+.postionList .item .icon {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  width: 0.8rem;
+  height: 0.74666667rem;
+  top: 14px;
+  right: 12px;
+}
+.postionList .item .icon.star {
+  background-image: url(../image/star.png);
+}
+.postionList .item .icon.star-active {
+  background-image: url(../image/star-active.png);
+}
 .foot {
   border-top: 1px solid #d4d4d4;
   padding: 0;
@@ -315,6 +329,17 @@
 .login form {
   margin-top: 6.93333333rem;
 }
+.login form .ng-invalid + span {
+  position: absolute;
+  color: red;
+  right: 0;
+  height: 100%;
+  text-align: right;
+  font-size: 12px;
+}
+.login form .ng-invalid + span p {
+  margin: 0;
+}
 .login form .form-line {
   margin: 0 auto;
   box-sizing: content-box;
@@ -327,7 +352,7 @@
 .login form .form-line:first-child {
   border-bottom: 1px solid #fff;
 }
-.login form .form-line span {
+.login form .form-line .icon {
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.4);
   background-position: 15px 8px;
@@ -345,6 +370,7 @@
   border-width: 0;
   outline-width: 0;
   height: 100%;
+  color: #fff;
   font-size: 0.37333333rem;
   width: 5.73333333rem;
   padding-left: 0.8rem;
@@ -485,6 +511,14 @@
 .my .name {
   margin-top: 0.66666667rem;
 }
+.my .login-btn {
+  background-color: #12d5b5;
+  color: #fff;
+  font-size: 0.42666667rem;
+  width: 9.06666667rem;
+  height: 1.06666667rem;
+  margin-top: 8rem;
+}
 .my .btns {
   margin-top: 1.06666667rem;
 }
@@ -503,6 +537,9 @@
   height: 1.06666667rem;
   margin-top: 0.53333333rem;
 }
+.my-post {
+  margin-top: 1.06666667rem;
+}
 html,
 body {
   width: 100%;
@@ -511,6 +548,9 @@ body {
 }
 .clear {
   clear: both;
+}
+.colorRed {
+  color: red;
 }
 body {
   font-size: 0.42666667rem;

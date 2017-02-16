@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app', ['ui.router', 'validation']);
+angular.module('app', ['ui.router', 'ngCookies', 'validation']);
 
 'use strict';
 
@@ -116,7 +116,7 @@ angular.module('app').config(['$validationProvider', function($validationProvide
 		},
 		required: {
 			success: '',
-			error: '验证码不能为空！'
+			error: '不能为空！'
 		}
 	};
 	$validationProvider.setExpression(expression).setDefaultMsg(defaultMsg);
@@ -134,12 +134,24 @@ angular.module('app').controller('companyCtrl', ['$http', '$state', '$scope', fu
 'use strict';
 
 angular.module('app').controller('favoriteCtrl', ['$scope', '$http', function($scope, $http) {
-	
+	$http({
+		method: 'GET',
+		url: '/data/myFavorite.json'
+	}).then(function(success) {
+		$scope.list = success.data;
+	});
 }]);
 'use strict';
 
-angular.module('app').controller('loginCtrl', ['$scope', '$http', function($scope, $http) {
-	
+angular.module('app').controller('loginCtrl', ['cache', '$scope', '$state', '$http', function(cache, $scope, $state, $http) {
+	$scope.submit = function() {
+		$http.post('/data/login.json', $scope.user).success(function(resp) {
+			cache.put('id', resp.data.id);
+			cache.put('name', resp.data.name);
+			cache.put('image', resp.data.image);
+			$state.go('main');
+		})
+	}
 }]);
 'use strict';
 
@@ -153,13 +165,23 @@ angular.module('app').controller('mainCtrl', ['$scope', '$http', function($scope
 }]);
 'use strict';
 
-angular.module('app').controller('myCtrl', ['$scope', '$http', function($scope, $http) {
-	
+angular.module('app').controller('myCtrl', ['$state','cache', '$scope', '$http', function($state, cache, $scope, $http) {
+	if(cache.get('name')) {
+		$scope.name = cache.get('name');
+		$scope.image = cache.get('image');
+	}
+	$scope.signout = function() {
+		cache.remove('id');
+		cache.remove('name');
+		cache.remove('image');
+		$state.go('main');
+	}
 }]);
 'use strict';
 
-angular.module('app').controller('positionCtrl', ['$q', '$http', '$state', '$scope', function($q, $http, $state, $scope) {
-	$scope.isLogin = false;
+angular.module('app').controller('positionCtrl', ['$log', 'cache', '$q', '$http', '$state', '$scope', function($log, cache, $q, $http, $state, $scope) {
+	$scope.isLogin = !!cache.get('name');
+
 	function getPosition() {
 		var def = $q.defer();
 		$http({
@@ -181,9 +203,22 @@ angular.module('app').controller('positionCtrl', ['$q', '$http', '$state', '$sco
 			$scope.company = success.data;
 		})
 	}
+	
 	getPosition().then(function(success) {
 		getCompany(success.data.companyId);
 	});
+
+	$scope.go = function() {
+		if($scope.isLogin) {
+			$http.post('/data/handle.json', {
+				id: $scope.position.id
+			}).success(function(resp) {
+				$log.info(resp.data);
+			});
+		}else{
+			$state.go('login');
+		}
+	}
 }]);
 'use strict';
 
@@ -197,7 +232,32 @@ angular.module('app').controller('postCtrl', ['$scope', '$http', function($scope
 	},{
 		id: 'fail',
 		name: '不合适'
-	}]
+	}];
+
+	$http({
+		method: 'GET',
+		url: '/data/myPost.json'
+	}).then(function(success) {
+		$scope.positionList = success.data;
+	});
+	
+	$scope.filterObj = {};
+	
+	$scope.tClick = function(id, name) {
+	  switch (id) {
+	    case 'all':
+	      delete $scope.filterObj.state;
+	      break;
+	    case 'pass':
+	      $scope.filterObj.state = '1';
+	      break;
+	    case 'fail':
+	      $scope.filterObj.state = '-1';         
+	      break;
+	    default:
+
+	  }
+	}
 }]);
 'use strict';
 
@@ -316,11 +376,14 @@ angular.module('app').directive('appFoot', [function() {
 }]);
 'use strict';
 
-angular.module('app').directive('appHead', [function() {
+angular.module('app').directive('appHead', ['cache', function(cache) {
 	return {
 		restrict: 'A',
 		replace: true,
-		templateUrl: 'view/template/head.html'
+		templateUrl: 'view/template/head.html',
+		link: function($scope) {
+			$scope.name = cache.get('name') || '';
+		}
 	};
 }]);
 'use strict';
@@ -363,7 +426,7 @@ angular.module('app').directive('appPositionClass', [function() {
 }]);
 'use strict';
 
-angular.module('app').directive('appPositionInfo', [function() {
+angular.module('app').directive('appPositionInfo', ['$http', function($http) {
 	return {
 		restrcit: 'A',
 		replace: true,
@@ -374,20 +437,46 @@ angular.module('app').directive('appPositionInfo', [function() {
 			position: '='
 		},
 		link: function($scope) {
-			$scope.imagePath = $scope.isActive?'image/star-active.png':'image/star.png';
+			$scope.$watch('position', function(newVal) {
+				if(newVal) {
+					$scope.position.select = $scope.position.select || false;
+					$scope.imagePath = $scope.position.select?'image/star-active.png':'image/star.png';
+				}
+			})
+
+			$scope.favorite = function() {
+				$http.post('/data/favorite.json', {
+					id: $scope.position.id,
+					select: $scope.position.select
+				}).success(function(resp) {
+					$scope.position.select = !$scope.position.select;
+					$scope.imagePath = $scope.position.select?'image/star-active.png':'image/star.png';
+				});
+			}
 		}
 	}
 }]);
 'use strict';
 
-angular.module('app').directive('appPositionList', [function() {
+angular.module('app').directive('appPositionList', ['$http', function($http) {
 	return {
 		restrict: 'A',
 		replace: true,
 		templateUrl: 'view/template/positionList.html',
 		scope: {
 			data: '=',
-			filterObj: '='
+			filterObj: '=',
+			isFavorite: '='
+		},
+		link: function($scope) {
+			$scope.select = function(item) {
+				$http.post('/data/favorite.json', {
+					id: item.id,
+					select: !item.select
+				}).success(function(resp) {
+					item.select = !item.select;
+				});
+			}
 		}
 	};
 }]);
@@ -417,6 +506,7 @@ angular.module('app').directive('appTab', [function() {
 		},
 		templateUrl: 'view/template/tab.html',
 		link: function($scope) {
+			$scope.selectId = $scope.list[0].id;
 			$scope.click = function(tab) {
 			  $scope.selectId = tab.id;
 			  $scope.tabClick(tab);
@@ -442,4 +532,17 @@ angular.module('app').filter('filterByObj', [function() {
 		});
 		return result;
 	};
+}]);
+'use strict';
+
+angular.module('app').service('cache', ['$cookies', function($cookies){
+    this.put = function(key, value){
+      $cookies.put(key, value);
+    };
+    this.get = function(key) {
+      return $cookies.get(key);
+    };
+    this.remove = function(key) {
+      $cookies.remove(key);
+    };
 }]);

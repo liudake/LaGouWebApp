@@ -22,7 +22,7 @@ angular.module('app').config(['$validationProvider', function($validationProvide
 		},
 		required: {
 			success: '',
-			error: '验证码不能为空！'
+			error: '不能为空！'
 		}
 	};
 	$validationProvider.setExpression(expression).setDefaultMsg(defaultMsg);

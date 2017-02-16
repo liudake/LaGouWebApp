@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app').directive('appPositionInfo', [function() {
+angular.module('app').directive('appPositionInfo', ['$http', function($http) {
 	return {
 		restrcit: 'A',
 		replace: true,
@@ -11,7 +11,22 @@ angular.module('app').directive('appPositionInfo', [function() {
 			position: '='
 		},
 		link: function($scope) {
-			$scope.imagePath = $scope.isActive?'image/star-active.png':'image/star.png';
+			$scope.$watch('position', function(newVal) {
+				if(newVal) {
+					$scope.position.select = $scope.position.select || false;
+					$scope.imagePath = $scope.position.select?'image/star-active.png':'image/star.png';
+				}
+			})
+
+			$scope.favorite = function() {
+				$http.post('/data/favorite.json', {
+					id: $scope.position.id,
+					select: $scope.position.select
+				}).success(function(resp) {
+					$scope.position.select = !$scope.position.select;
+					$scope.imagePath = $scope.position.select?'image/star-active.png':'image/star.png';
+				});
+			}
 		}
 	}
 }]);
