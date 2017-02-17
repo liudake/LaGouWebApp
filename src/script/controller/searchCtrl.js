@@ -23,7 +23,7 @@ angular.module('app').controller('searchCtrl', ['dict', '$http', '$scope', funct
 		name: '公司规模'
 	}];
 
-	 $scope.filterObj = {};
+	$scope.filterObj = {};
 	var tabId = '';
 	$scope.tClick = function(id, name) {
 		tabId = id;
