@@ -1,126 +1,7 @@
 'use strict';
 
-angular.module('app', ['ui.router', 'ngCookies', 'validation']);
+angular.module('app', ['ui.router', 'ngCookies', 'validation', 'ngAnimate']);
 
-'use strict';
-
-angular.module('app').value('dict', {}).run(['dict', '$http', function(dict, $http){
-		$http({
-			method: 'GET',
-			url: '/data/city.json'
-		}).then(function(success) {
-			dict.city = success.data;
-		});
-		$http({
-			method: 'GET',
-			url: '/data/salary.json'
-		}).then(function(success) {
-			dict.salary = success.data;
-		});
-		$http({
-			method: 'GET',
-			url: '/data/scale.json'
-		}).then(function(success) {
-			dict.scale = success.data;
-		});
-}]);
-
-
-'use strict';
-
-angular.module('app').config(['$provide', function($provide) {
-	$provide.decorator('$http', ['$delegate', '$q', function($delegate, $q) {
-		$delegate.post = function(url, data, config) {
-			var def = $q.defer();
-			$delegate.get(url).then(function(success) {
-				def.resolve(success);
-			}, function(err) {
-				def.reject(err);
-			});
-			return 	{
-				success: function(callback){
-					def.promise.then(callback);
-				},
-				error: function(callback) {
-					def.promise.then(callback);
-				}
-			}
-		}	
-		return $delegate;
-	}]);
-}]);
-'use strict';
-
-angular.module('app').config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
-	$locationProvider.hashPrefix('');
-	$stateProvider.state('main', {
-		url: "/main",
-		templateUrl: "view/main.html",
-		controller: 'mainCtrl'
-	}).state('position', {
-		url: '/position/:id',
-		templateUrl: 'view/position.html',
-		controller: 'positionCtrl'
-	}).state('company', {
-		url: '/company/:id',
-		templateUrl: 'view/company.html',
-		controller: 'companyCtrl'
-	}).state('search', {
-		url: '/search',
-		templateUrl: 'view/search.html',
-		controller: 'searchCtrl'
-	}).state('login', {
-		url: '/login',
-		templateUrl: 'view/login.html',
-		controller: 'loginCtrl'
-	}).state('register', {
-		url: '/register',
-		templateUrl: 'view/register.html',
-		controller: 'registerCtrl'
-	}).state('my', {
-		url: '/my',
-		templateUrl: 'view/my.html',
-		controller: 'myCtrl'
-	}).state('favorite', {
-		url: '/favorite',
-		templateUrl: 'view/favorite.html',
-		controller: 'favoriteCtrl'
-	}).state('post', {
-		url: '/post',
-		templateUrl: 'view/post.html',
-		controller: 'postCtrl'
-	});
-	$urlRouterProvider.otherwise("main");
-}])
-'use strcit';
-
-angular.module('app').config(['$validationProvider', function($validationProvider) {
-	var expression = {
-		phone: /^1[\d]{10}$/,
-		password: function(value) {
-			var str = value + '';
-			return str.length > 5;
-		},
-		required: function(value) {
-			return !!value;
-		}
-	};
-	var defaultMsg = {
-		phone: {
-			success: '',
-			error: '必须是11位手机号'
-		},
-		password: {
-			success: '',
-			error: '长度至少6位'
-		},
-		required: {
-			success: '',
-			error: '不能为空！'
-		}
-	};
-	$validationProvider.setExpression(expression).setDefaultMsg(defaultMsg);
-}]);
 'use strcit';
 
 angular.module('app').controller('companyCtrl', ['$http', '$state', '$scope', function($http, $state, $scope) {
@@ -516,6 +397,139 @@ angular.module('app').directive('appTab', [function() {
 }]);
 'use strict';
 
+angular.module('app').value('dict', {}).run(['dict', '$http', function(dict, $http){
+		$http({
+			method: 'GET',
+			url: '/data/city.json'
+		}).then(function(success) {
+			dict.city = success.data;
+		});
+		$http({
+			method: 'GET',
+			url: '/data/salary.json'
+		}).then(function(success) {
+			dict.salary = success.data;
+		});
+		$http({
+			method: 'GET',
+			url: '/data/scale.json'
+		}).then(function(success) {
+			dict.scale = success.data;
+		});
+}]);
+
+
+'use strict';
+
+angular.module('app').config(['$provide', function($provide) {
+	$provide.decorator('$http', ['$delegate', '$q', function($delegate, $q) {
+		$delegate.post = function(url, data, config) {
+			var def = $q.defer();
+			$delegate.get(url).then(function(success) {
+				def.resolve(success);
+			}, function(err) {
+				def.reject(err);
+			});
+			return 	{
+				success: function(callback){
+					def.promise.then(callback);
+				},
+				error: function(callback) {
+					def.promise.then(callback);
+				}
+			}
+		}	
+		return $delegate;
+	}]);
+}]);
+'use strict';
+
+angular.module('app').config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
+	$locationProvider.hashPrefix('');
+	$stateProvider.state('main', {
+		url: "/main",
+		templateUrl: "view/main.html",
+		controller: 'mainCtrl'
+	}).state('position', {
+		url: '/position/:id',
+		templateUrl: 'view/position.html',
+		controller: 'positionCtrl'
+	}).state('company', {
+		url: '/company/:id',
+		templateUrl: 'view/company.html',
+		controller: 'companyCtrl'
+	}).state('search', {
+		url: '/search',
+		templateUrl: 'view/search.html',
+		controller: 'searchCtrl'
+	}).state('login', {
+		url: '/login',
+		templateUrl: 'view/login.html',
+		controller: 'loginCtrl'
+	}).state('register', {
+		url: '/register',
+		templateUrl: 'view/register.html',
+		controller: 'registerCtrl'
+	}).state('my', {
+		url: '/my',
+		templateUrl: 'view/my.html',
+		controller: 'myCtrl'
+	}).state('favorite', {
+		url: '/favorite',
+		templateUrl: 'view/favorite.html',
+		controller: 'favoriteCtrl'
+	}).state('post', {
+		url: '/post',
+		templateUrl: 'view/post.html',
+		controller: 'postCtrl'
+	});
+	$urlRouterProvider.otherwise("main");
+}])
+'use strcit';
+
+angular.module('app').config(['$validationProvider', function($validationProvider) {
+	var expression = {
+		phone: /^1[\d]{10}$/,
+		password: function(value) {
+			var str = value + '';
+			return str.length > 5;
+		},
+		required: function(value) {
+			return !!value;
+		}
+	};
+	var defaultMsg = {
+		phone: {
+			success: '',
+			error: '必须是11位手机号'
+		},
+		password: {
+			success: '',
+			error: '长度至少6位'
+		},
+		required: {
+			success: '',
+			error: '不能为空！'
+		}
+	};
+	$validationProvider.setExpression(expression).setDefaultMsg(defaultMsg);
+}]);
+'use strict';
+
+angular.module('app').service('cache', ['$cookies', function($cookies){
+    this.put = function(key, value){
+      $cookies.put(key, value);
+    };
+    this.get = function(key) {
+      return $cookies.get(key);
+    };
+    this.remove = function(key) {
+      $cookies.remove(key);
+    };
+}]);
+
+'use strict';
+
 angular.module('app').filter('filterByObj', [function() {
 	return function(list, obj) {
 		var result = [];
@@ -532,17 +546,4 @@ angular.module('app').filter('filterByObj', [function() {
 		});
 		return result;
 	};
-}]);
-'use strict';
-
-angular.module('app').service('cache', ['$cookies', function($cookies){
-    this.put = function(key, value){
-      $cookies.put(key, value);
-    };
-    this.get = function(key) {
-      return $cookies.get(key);
-    };
-    this.remove = function(key) {
-      $cookies.remove(key);
-    };
 }]);

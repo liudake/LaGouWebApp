@@ -540,6 +540,13 @@
 .my-post {
   margin-top: 1.06666667rem;
 }
+.ng-enter {
+  transition: 0.5s linear all;
+  opacity: 0;
+}
+.ng-enter-active {
+  opacity: 1;
+}
 html,
 body {
   width: 100%;
